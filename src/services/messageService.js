@@ -1,17 +1,23 @@
 const prisma = require('../config/prisma');
 
 async function saveIncomingMessage(message) {
+  const updateData = {
+    groupId: message.groupId,
+    senderName: message.senderName,
+    senderPhone: message.senderPhone,
+    senderType: message.senderType,
+    body: message.body,
+    timestamp: message.timestamp,
+  };
+
+  // Preserve existing pending status unless an explicit value is provided
+  if (typeof message.isPendingReply === 'boolean') {
+    updateData.isPendingReply = message.isPendingReply;
+  }
+
   return prisma.message.upsert({
     where: { id: message.id },
-    update: {
-      groupId: message.groupId,
-      senderName: message.senderName,
-      senderPhone: message.senderPhone,
-      senderType: message.senderType,
-      body: message.body,
-      timestamp: message.timestamp,
-      isPendingReply: message.isPendingReply ?? false,
-    },
+    update: updateData,
     create: {
       id: message.id,
       groupId: message.groupId,
