@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Message {
+  id             String   @id
+  groupId        String
+  senderName     String
+  senderPhone    String
+  senderType     String
+  body           String?
+  timestamp      DateTime
+  isPendingReply Boolean  @default(false)
+}
